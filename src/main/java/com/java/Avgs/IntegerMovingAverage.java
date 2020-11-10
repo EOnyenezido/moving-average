@@ -68,4 +68,41 @@ public class IntegerMovingAverage implements MovingAverage<Integer> {
 
         return count < window.length ? window[index] : window[(position + index) % window.length];
     }
+
+    /**
+     * This method returns a list of the last N Integers added in the order they were added.
+     *
+     * @return (List (Integer)) - An ordered list of the last N Integers added.
+     */
+    @Override
+    public List<Integer> getAllElements() {
+        // Simply initialize a list and add all the elements in order
+        List<Integer> elements = new ArrayList<>();
+        int pos = position;
+        for (int i = 0; i < count; i++) {
+            elements.add(count < window.length ? window[i] : window[pos]);
+            pos = (pos + 1) % window.length;
+        }
+        return elements;
+    }
+
+    /**
+     * This method computes the moving average of the last N Integers.
+     *
+     * @return (double) - The moving average average of the last N Integers.
+     */
+    @Override
+    public double getAverage() {
+        return (double) sum / count;
+    }
+
+    /**
+     * This method returns the current window size or N.
+     *
+     * @return (int) - The current window size or N.
+     */
+    @Override
+    public int getWindowSize() {
+        return window.length;
+    }
 }
