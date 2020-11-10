@@ -142,4 +142,42 @@ public class IntegerMovingAverageTest {
         // Assert
         assertEquals(windowSize, actualWindowSize);
     }
+
+    @Test
+    public void shouldCorrectlyCalculateMovingAverage_WhenSeveralElementsAreAdded() {
+        // GIVEN an IntegerMovingAverage instance
+        // WHEN several elements are added and get average is called
+        // THEN should correctly return the average
+
+        // Arrange
+        IntegerMovingAverage mvAvg = new IntegerMovingAverage(5);
+
+        //Act
+        // First test number of elements less than window size
+        mvAvg.addElement(4);
+        mvAvg.addElement(6);
+        mvAvg.addElement(93);
+        double avgWhenLessThanWindowSize = mvAvg.getAverage();
+
+        // Then test when number of elements are equal to window size
+        mvAvg.addElement(74);
+        mvAvg.addElement(12);
+        double avgWhenEqualToWindowSize = mvAvg.getAverage();
+
+        // Then test when number of elements are greater than window size
+        // The average should be that of the last N elements
+        mvAvg.addElement(8);
+        mvAvg.addElement(4);
+        mvAvg.addElement(15);
+        mvAvg.addElement(3);
+        mvAvg.addElement(6);
+        mvAvg.addElement(91);
+        mvAvg.addElement(1067);
+        double avgWhenGreaterThanWindowSize = mvAvg.getAverage();
+
+        // Assert
+        assertEquals(34.33, avgWhenLessThanWindowSize, 0.01);
+        assertEquals(37.8, avgWhenEqualToWindowSize, 0.0);
+        assertEquals(236.4, avgWhenGreaterThanWindowSize, 0.0);
+    }
 }
