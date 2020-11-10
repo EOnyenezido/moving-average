@@ -28,4 +28,44 @@ public class IntegerMovingAverage implements MovingAverage<Integer> {
     public IntegerMovingAverage(int windowSize) {
         window = new int[windowSize];
     }
+
+    /**
+     * This method essentially adds a new Integer to the list of Integer.
+     *
+     * @param element The Integer to be added to the list.
+     */
+    @Override
+    public void addElement(Integer element) {
+        // Keep a count if the last added elements
+        if (count < window.length) count++;
+        // Keep a sum of the last added N elements
+        sum -= window[position];
+        sum += element;
+        // Add the element at the correct position, overwriting the previous N + 1 element
+        window[position] = element;
+        position = (position + 1) % window.length;
+    }
+
+    /**
+     * This method gets an element from the last N added Integers based on the index.
+     * <p>
+     * It is zero indexed with respect to N, for example after adding 5 Integers (N = 5),
+     * to retrieve the 1st Integer added, index = 0, 2nd Integer - index = 1 and so on.
+     * <p>
+     * When an Integer does not exist at an index, it throws a java.util.NoSuchElementException exception.
+     * For example where N = 5, after adding 3 Integers then call get element at index 4
+     *
+     * @param index The index of the Integer to retrieve
+     * @return (Integer) - The requested Integer at that index
+     * @throws NoSuchElementException This exception is thrown when an element does not exist at a requested index.
+     */
+    @Override
+    public Integer getElement(int index) throws NoSuchElementException {
+        // Element does not exist
+        if (index < 0 || index >= window.length || index > count || count == 0) {
+            throw new NoSuchElementException("No element exists at index: " + index);
+        }
+
+        return count < window.length ? window[index] : window[(position + index) % window.length];
+    }
 }
