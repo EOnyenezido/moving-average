@@ -94,4 +94,52 @@ public class IntegerMovingAverageTest {
             assertEquals(expectedMessage, actualMessage);
         }
     }
+
+    @Test
+    public void shouldReturnAllElementsInOrderTheyWereAdded() {
+        // GIVEN an IntegerMovingAverage instance
+        // WHEN get all elements is called
+        // THEN it should return all elements in the order they were added
+
+        // Arrange
+        IntegerMovingAverage mvAvg = new IntegerMovingAverage(5);
+
+        // Act
+        mvAvg.addElement(4);
+        mvAvg.addElement(-92);
+        mvAvg.addElement(2834);
+        List<Integer> firstThreeElements = mvAvg.getAllElements();
+        mvAvg.addElement(12);
+        mvAvg.addElement(4);
+        List<Integer> firstFiveElements = mvAvg.getAllElements();
+        mvAvg.addElement(36);
+        mvAvg.addElement(-98);
+        mvAvg.addElement(-239);
+        List<Integer> nextFiveElements = mvAvg.getAllElements();
+
+        // Assert
+        List<Integer> actualFirstThreeElements = Arrays.asList(4, -92, 2834);
+        assertEquals(firstThreeElements, actualFirstThreeElements);
+        List<Integer> actualFirstFiveElements = Arrays.asList(4, -92, 2834, 12, 4);
+        assertEquals(firstFiveElements, actualFirstFiveElements);
+        List<Integer> actualNextFiveElements = Arrays.asList(12, 4, 36, -98, -239);
+        assertEquals(nextFiveElements, actualNextFiveElements);
+    }
+
+    @Test
+    public void shouldCorrectlyReturnWindowSize() {
+        // GIVEN an IntegerMovingAverage instance
+        // WHEN get window size is called
+        // THEN the window size should be the same as when initialized
+
+        // Arrange
+        int windowSize = 8;
+        IntegerMovingAverage mvAvg = new IntegerMovingAverage(windowSize);
+
+        // Act
+        int actualWindowSize = mvAvg.getWindowSize();
+
+        // Assert
+        assertEquals(windowSize, actualWindowSize);
+    }
 }
