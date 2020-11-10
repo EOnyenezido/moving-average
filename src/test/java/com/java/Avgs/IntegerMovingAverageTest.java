@@ -180,4 +180,108 @@ public class IntegerMovingAverageTest {
         assertEquals(37.8, avgWhenEqualToWindowSize, 0.0);
         assertEquals(236.4, avgWhenGreaterThanWindowSize, 0.0);
     }
+
+    @Test
+    public void shouldCorrectlyCalculateMovingAverage_WhenNegativeValuesAreAdded() {
+        // GIVEN an IntegerMovingAverage instance
+        // WHEN negative elements are added and get average is called
+        // THEN should correctly return the average
+
+        // Arrange
+        IntegerMovingAverage mvAvg = new IntegerMovingAverage(5);
+
+        // Act
+        // First only negative elements
+        mvAvg.addElement(-4);
+        mvAvg.addElement(-294);
+        mvAvg.addElement(-95);
+        double avgWithNegativeElements = mvAvg.getAverage();
+
+        // Then a mix of negative and positive elements
+        mvAvg.addElement(89);
+        mvAvg.addElement(40);
+        mvAvg.addElement(-18);
+        double avgWithNegativeAndPositiveElements = mvAvg.getAverage();
+
+        assertEquals(-131.0, avgWithNegativeElements, 0);
+        assertEquals(-55.6, avgWithNegativeAndPositiveElements, 0);
+    }
+
+    @Test
+    public void shouldCorrectlyCalculateMovingAverage_WhenWindowSizeIsIncreased() {
+        // GIVEN an IntegerMovingAverage instance
+        // WHEN several elements are added and window size is increased
+        // THEN should still correctly return the average
+
+        // Arrange
+        IntegerMovingAverage mvAvg = new IntegerMovingAverage(3);
+        IntegerMovingAverage mvAvgChangingSize = new IntegerMovingAverage(3);
+        int newWindowSize = 5;
+
+        // Act
+        mvAvg.addElement(5);
+        mvAvgChangingSize.addElement(5);
+        mvAvg.addElement(8);
+        mvAvgChangingSize.addElement(8);
+        mvAvg.addElement(3);
+        mvAvgChangingSize.addElement(3);
+        // Change window size
+        mvAvgChangingSize.changeWindowSize(newWindowSize);
+        mvAvg.addElement(9);
+        mvAvgChangingSize.addElement(9);
+        mvAvg.addElement(11);
+        mvAvgChangingSize.addElement(11);
+
+        double avg = mvAvg.getAverage();
+        double avgAfterSizeChange = mvAvgChangingSize.getAverage();
+
+        // Assert
+        // Window size actually changed
+        assertEquals(newWindowSize, mvAvgChangingSize.getWindowSize());
+        // Window sizes of the two instances are not equal
+        assertNotEquals(mvAvg.getWindowSize(), mvAvgChangingSize.getWindowSize());
+        // Averages returned by the two instances are not the same
+        assertNotEquals(avg, avgAfterSizeChange);
+        // Correct average is returned after window size decrease
+        assertEquals(7.2, avgAfterSizeChange, 0.0);
+    }
+
+    @Test
+    public void shouldCorrectlyCalculateMovingAverage_WhenWindowSizeIsDecreased() {
+        // GIVEN an IntegerMovingAverage instance
+        // WHEN several elements are added and window size is decreased
+        // THEN should still correctly return the average
+
+        // Arrange
+        IntegerMovingAverage mvAvg = new IntegerMovingAverage(5);
+        IntegerMovingAverage mvAvgChangingSize = new IntegerMovingAverage(5);
+        int newWindowSize = 3;
+
+        // Act
+        mvAvg.addElement(5);
+        mvAvgChangingSize.addElement(5);
+        mvAvg.addElement(8);
+        mvAvgChangingSize.addElement(8);
+        mvAvg.addElement(3);
+        mvAvgChangingSize.addElement(3);
+        mvAvg.addElement(9);
+        mvAvgChangingSize.addElement(9);
+        mvAvg.addElement(11);
+        mvAvgChangingSize.addElement(11);
+        // Change window size
+        mvAvgChangingSize.changeWindowSize(newWindowSize);
+
+        double avg = mvAvg.getAverage();
+        double avgAfterSizeChange = mvAvgChangingSize.getAverage();
+
+        // Assert
+        // Window size actually changed
+        assertEquals(newWindowSize, mvAvgChangingSize.getWindowSize());
+        // Window sizes of the two instances are not equal
+        assertNotEquals(mvAvg.getWindowSize(), mvAvgChangingSize.getWindowSize());
+        // Averages returned by the two instances are not the same
+        assertNotEquals(avg, avgAfterSizeChange);
+        // Correct average is returned after window size increase
+        assertEquals(7.66, avgAfterSizeChange, 0.01);
+    }
 }
