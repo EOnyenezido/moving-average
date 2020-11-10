@@ -105,4 +105,29 @@ public class IntegerMovingAverage implements MovingAverage<Integer> {
     public int getWindowSize() {
         return window.length;
     }
+
+    /**
+     * This method allows for changing the current window size or N.
+     *
+     * @param newWindowSize The new value of N or the window size.
+     * @return (boolean) - Whether the window size was changed successfully.
+     */
+    @Override
+    public boolean changeWindowSize(int newWindowSize) {
+        // If the array is increasing, no need to recompute the average
+        if (newWindowSize > window.length) {
+            if (position < window.length - 1) position = window.length;
+            window = Arrays.copyOf(window, newWindowSize);
+        } else { // If the array is decreasing, we need to recompute the average as we are losing some elements
+            int[] temp = window.clone();
+            window = new int[newWindowSize];
+            sum = 0; count = 0;
+            int pos = position;
+            for (int i = 0; i < newWindowSize; i++) {
+                pos = pos - 1 < 0 ? temp.length - 1 : pos - 1;
+                this.addElement(temp[pos]);
+            }
+        }
+        return window.length == newWindowSize;
+    }
 }
